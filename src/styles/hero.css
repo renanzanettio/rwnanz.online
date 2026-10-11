@@ -1,0 +1,339 @@
+/* ==========================================================================
+   Hero: título, texto, botões, números e o Pingado com as anotações.
+   ========================================================================== */
+
+/* ---------- entrada do conteúdo (começa quando a folha da abertura sobe) ----------
+   Só mexem em posição/transparência quando o JavaScript existe (html.js);
+   o texto principal só desliza (sem sumir), para a página já "existir" por baixo da abertura. */
+
+@keyframes rise {
+  from {
+    translate: 0 22px;
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+html.js .rise {
+  animation: rise 0.9s var(--ease-out) calc(var(--enter-delay) + var(--i, 0) * 90ms) backwards;
+}
+html.js .fade-in {
+  animation: fade-in 1s ease calc(var(--enter-delay) + var(--i, 0) * 120ms) backwards;
+}
+
+/* ---------- grade ---------- */
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "text"
+    "art"
+    "stats";
+  gap: 44px;
+  padding-block: clamp(36px, 6vw, 88px) clamp(56px, 7vw, 104px);
+}
+
+.hero__text {
+  grid-area: text;
+  min-width: 0;
+}
+.hero__art {
+  grid-area: art;
+}
+.hero__stats {
+  grid-area: stats;
+}
+
+@media (min-width: 960px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "text art"
+      "stats art";
+    column-gap: clamp(40px, 4vw, 56px);
+    row-gap: clamp(40px, 5vw, 64px);
+    align-items: center;
+  }
+  .hero__stats {
+    align-self: start;
+  }
+}
+
+/* ---------- texto ---------- */
+
+/* O título tem duas linhas fixas. A mais longa, "CAMADA POR CAMADA.", mede 8,56em na fonte Anton,
+   então o tamanho da letra é a largura da coluna ÷ 8,8 (sobra um respiro para não quebrar).
+   Em navegadores com container query (todos os atuais) isso acompanha a coluna de verdade;
+   nos mais antigos valem as estimativas por largura de tela logo abaixo. */
+.hero__title {
+  margin-top: 26px;
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: clamp(30px, calc((100vw - 2 * var(--gutter)) / 8.8), 62px);
+  line-height: 1;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+.hero__title span {
+  color: var(--caramelo);
+  text-decoration: underline wavy var(--caramelo) 3px;
+  text-underline-offset: 0.2em;
+  text-decoration-skip-ink: none;
+}
+
+@media (min-width: 960px) {
+  .hero__title {
+    margin-top: 28px;
+    font-size: clamp(50px, 5vw, 70px);
+  }
+  .hero__title span {
+    text-underline-offset: 12px;
+  }
+}
+
+@supports (width: 1cqi) {
+  .hero__text {
+    container-type: inline-size;
+  }
+  .hero__title {
+    font-size: min(76px, 11.3cqi);
+  }
+}
+
+.hero__lead {
+  margin-top: 32px;
+  max-width: 33em;
+  font-size: clamp(18px, 1.5vw, 21px);
+  line-height: 1.6;
+  color: var(--txt2);
+}
+
+.hero__lead strong {
+  color: var(--txt);
+}
+
+@media (min-width: 960px) {
+  .hero__lead {
+    margin-top: 44px;
+  }
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 32px;
+}
+
+@media (max-width: 479.98px) {
+  .hero__cta .btn {
+    flex: 1 1 auto;
+    padding-inline: 18px;
+  }
+}
+
+/* ---------- números ---------- */
+
+.hero__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  border-top: 1px solid var(--line);
+}
+
+.hero__stats li {
+  min-width: 0;
+  padding: 22px 20px 0;
+}
+.hero__stats li:first-child {
+  padding-left: 0;
+}
+.hero__stats li + li {
+  border-left: 1px solid var(--line);
+}
+.hero__stats li:last-child {
+  padding-right: 0;
+}
+
+.stat__n {
+  display: block;
+  font-family: var(--disp);
+  font-size: 42px;
+  line-height: 1;
+  color: var(--caramelo);
+}
+
+.stat__l {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--txt2);
+}
+
+@media (max-width: 559.98px) {
+  .hero__stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hero__stats li:last-child {
+    grid-column: 1 / -1;
+    margin-top: 22px;
+    padding: 22px 0 0;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* ---------- o Pingado e as anotações ---------- */
+
+.hero__art {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin-inline: auto;
+  aspect-ratio: 1 / 1.02;
+}
+
+.hero__disc {
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  background: var(--surf);
+  border: 1px solid var(--line);
+}
+
+.hero__ring {
+  position: absolute;
+  inset: -1%;
+  border-radius: 50%;
+  border: 1px dashed rgba(244, 232, 212, 0.12);
+}
+
+/* o botão invisível que envolve o desenho (clicou, ele pula e fala) */
+.mascot {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  width: 68%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform: translateX(-50%);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.mascot:focus-visible {
+  outline: 2px dashed var(--caramelo);
+  outline-offset: 8px;
+  border-radius: 24px;
+}
+
+/* o balão de fala */
+.bubble {
+  position: absolute;
+  left: 3%;
+  top: 7%;
+  z-index: 3;
+  max-width: 46%;
+  padding: 10px 16px 11px;
+  border-radius: 18px;
+  background: var(--leite);
+  color: var(--bg);
+  font-family: var(--hand);
+  font-weight: 700;
+  font-size: clamp(20px, 2.1vw, 26px);
+  line-height: 1.1;
+  opacity: 0;
+  transform: translateY(8px) scale(0.9);
+  transform-origin: 70% 100%;
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.28s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.bubble::after {
+  content: "";
+  position: absolute;
+  right: 18%;
+  bottom: -9px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 11px solid var(--leite);
+}
+.bubble[data-show="true"] {
+  opacity: 1;
+  transform: none;
+}
+.bubble span {
+  display: inline-block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bubble[data-show="true"] span {
+    animation: bubble-wiggle 0.5s ease;
+  }
+}
+@keyframes bubble-wiggle {
+  0% {
+    transform: scale(0.9) rotate(-2deg);
+  }
+  60% {
+    transform: scale(1.04) rotate(1deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* anotações escritas à mão: front-end em cima, back-end embaixo */
+.note {
+  position: absolute;
+  width: 30%;
+}
+.note--front {
+  left: 68%;
+  top: 15%;
+}
+.note--back {
+  left: 67%;
+  top: 76%;
+  width: 31%;
+}
+
+.note__title {
+  font-family: var(--hand);
+  font-weight: 700;
+  font-size: clamp(22px, 2.5vw, 32px);
+  line-height: 1;
+  color: var(--caramelo);
+}
+
+.note__sub {
+  margin-top: 2px;
+  font-size: clamp(12px, 1vw, 13px);
+  color: var(--txt2);
+}
+
+.note__arrow {
+  display: block;
+  width: 58%;
+  overflow: visible;
+}
+.note__arrow path {
+  fill: none;
+  stroke: var(--caramelo);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.note--front .note__arrow {
+  margin: 2px 0 0 -6%;
+}
+.note--back .note__arrow {
+  margin: 0 0 2px -4%;
+}

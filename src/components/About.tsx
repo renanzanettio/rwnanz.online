@@ -1,56 +1,29 @@
-import Image from "next/image";
-
-const skills = [
-  "JavaScript",
-  "React",
-  "React Native",
-  "Next.js",
-  "PHP",
-  "Python",
-  "Java",
-  "C#",
-  "MySQL",
-  "MongoDB",
-];
+import { site } from "@/lib/site";
 
 export default function About() {
   return (
-    <section id="sobre" className="mx-auto max-w-5xl px-6 py-20 sm:px-8">
-      <div className="grid gap-10 sm:grid-cols-[auto_1fr] sm:gap-16">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-route-teal-deep">
-          Sobre
-        </p>
-        <div className="max-w-xl">
-          <p className="font-display text-2xl leading-snug text-ink sm:text-3xl">
-            Renan Zanetti.
-          </p>
-          <p className="mt-4 text-base leading-relaxed text-ink-soft">
-            Estudante de Desenvolvimento de Software Multiplataformas na
-            Fatec de Registro, técnico em Desenvolvimento de Sistemas pela
-            Etec de Registro. Já passei por suporte de TI e infraestrutura
-            (PRODESP/Stefanini) e hoje foco em projetos de desenvolvimento
-            web, mobile e visão computacional — em busca de uma posição como
-            desenvolvedor júnior.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {skills.map((skill) => (
-              <span
-                key={skill}
-                className="rounded-full border border-line px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-ink-soft"
-              >
-                {skill}
-              </span>
+    <section className="sec" id="sobre" aria-labelledby="sobre-titulo">
+      <div className="wrap sec__in about">
+        <div className="about__head">
+          <p className="eyebrow">Sobre</p>
+          <h2 id="sobre-titulo" className="sec-title">
+            Renan
+            <br />
+            Zanetti
+          </h2>
+        </div>
+
+        <div className="about__body">
+          <p className="about__text reveal">{site.about.text}</p>
+
+          <dl className="path">
+            {site.about.path.map((step) => (
+              <div key={step.place} className="path__row reveal">
+                <dt>{step.place}</dt>
+                <dd>{step.what}</dd>
+              </div>
             ))}
-          </div>
-          <p className="mt-8 font-mono text-sm text-ink-soft">
-            Baseado no Brasil. Disponível para novos projetos.
-          </p>
-          <div className="mt-10 flex items-center gap-3">
-            <Image src="/logo.svg" alt="" width={40} height={35} />
-            <span className="font-display italic text-lg text-ink-soft">
-              — Renan
-            </span>
-          </div>
+          </dl>
         </div>
       </div>
     </section>

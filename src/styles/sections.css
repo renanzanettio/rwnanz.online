@@ -1,0 +1,610 @@
+/* ==========================================================================
+   Seções: Projetos, Camadas, Sobre, Contato, Rodapé e a página 404.
+   ========================================================================== */
+
+/* ---------- aparecer ao rolar (só em navegadores que sabem; nos outros o conteúdo já está lá) ---------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 24%;
+    }
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        translate: 0 28px;
+      }
+      to {
+        opacity: 1;
+        translate: 0 0;
+      }
+    }
+  }
+}
+
+/* ---------- estrutura comum ---------- */
+
+.sec {
+  border-top: 1px solid var(--line);
+}
+
+.sec--surf {
+  background: var(--surf) var(--grain-light);
+}
+
+.sec__in {
+  padding-block: clamp(72px, 8vw, 112px);
+}
+
+.sec-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px 48px;
+}
+
+.sec-title {
+  margin-top: 16px;
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: clamp(44px, 5vw, 72px);
+  line-height: 1;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.sec-lead {
+  max-width: 26em;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--txt2);
+}
+
+/* ==========================================================================
+   Projetos
+   ========================================================================== */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: clamp(22px, 2.6vw, 32px);
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  transition: border-color 0.15s ease;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--cobre);
+  }
+}
+.card:focus-within {
+  border-color: var(--cobre);
+}
+
+.card__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card__num {
+  font-family: var(--disp);
+  font-size: 18px;
+  letter-spacing: 0.1em;
+  color: var(--txt2);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 13px;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.card__cover {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+}
+.card__cover img {
+  object-fit: cover;
+}
+
+.card__title {
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: clamp(44px, 4.6vw, 64px);
+  line-height: 0.98;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.card__sum {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.card__desc {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--txt2);
+}
+
+/* a divisão do projeto: leite (front) em cima, linha de caramelo, café (back) embaixo */
+.stack {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.stack__row {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  margin: 0;
+  padding: 11px 16px;
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.stack__row--front {
+  background: var(--leite);
+  color: var(--bg);
+}
+.stack__row--back {
+  background: var(--cafe);
+  color: var(--txt);
+}
+
+.stack__tag {
+  flex: 0 0 52px;
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.stack__row--front .stack__tag {
+  color: var(--tinta);
+}
+.stack__row--back .stack__tag {
+  color: var(--caramelo);
+}
+
+.stack__line {
+  display: block;
+  height: 3px;
+  background: var(--caramelo);
+}
+
+.card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.card__soon {
+  margin-top: auto;
+  padding-top: 6px;
+  font-size: 15px;
+  color: var(--txt2);
+}
+
+/* ==========================================================================
+   Camadas: leite em cima, café embaixo, e a linha de caramelo no meio
+   ========================================================================== */
+
+.layers {
+  margin-top: 48px;
+  overflow: hidden;
+  border: 1px solid var(--line2);
+  border-radius: 24px;
+}
+
+.layer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 48px;
+  padding: clamp(24px, 3vw, 40px);
+}
+
+.layer--front {
+  background: var(--leite) var(--grain-dark);
+  color: var(--bg);
+}
+.layer--back {
+  background: var(--cafe);
+  color: var(--txt);
+}
+
+.layer__head {
+  flex: 0 0 260px;
+  min-width: 0;
+}
+
+.layer__name {
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: clamp(40px, 4vw, 56px);
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.layer__hint {
+  margin-top: 6px;
+  font-family: var(--hand);
+  font-weight: 700;
+  font-size: 28px;
+}
+.layer--front .layer__hint {
+  color: var(--tinta);
+}
+.layer--back .layer__hint {
+  color: var(--caramelo);
+}
+
+.layer__body {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.layer__text {
+  margin-bottom: 18px;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.layer--front .layer__text {
+  color: var(--tinta-suave);
+}
+.layer--back .layer__text {
+  color: var(--cafe-txt);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  display: inline-block;
+  padding: 6px 13px;
+  border: 1.5px solid currentColor;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.layers__wave {
+  display: block;
+  width: 100%;
+  height: 36px;
+  background: var(--leite) var(--grain-dark);
+}
+.layers__wave-fill {
+  fill: var(--cafe);
+}
+.layers__wave-line {
+  fill: none;
+  stroke: var(--caramelo);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 759.98px) {
+  .layer__head {
+    flex-basis: 100%;
+  }
+  .layer {
+    gap: 16px 48px;
+  }
+  .layers__wave {
+    height: 28px;
+  }
+}
+
+/* ==========================================================================
+   Sobre
+   ========================================================================== */
+
+.about {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px 72px;
+}
+
+.about__head {
+  flex: 0 0 280px;
+  min-width: 0;
+}
+
+.about__body {
+  flex: 1 1 520px;
+  min-width: 0;
+}
+
+.about__text {
+  max-width: 34em;
+  font-size: clamp(19px, 1.7vw, 24px);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.path {
+  margin-top: 40px;
+}
+
+.path__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 32px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.path__row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.path dt {
+  flex: 0 0 220px;
+  font-weight: 700;
+}
+.path dd {
+  flex: 1 1 260px;
+  color: var(--txt2);
+}
+
+@media (max-width: 759.98px) {
+  .about__head,
+  .path dt {
+    flex-basis: 100%;
+  }
+  .path dd {
+    flex-basis: 100%;
+  }
+}
+
+/* ==========================================================================
+   Contato (fundo cor de leite)
+   ========================================================================== */
+
+.contact {
+  --focus: var(--tinta);
+  background: var(--leite) var(--grain-dark);
+  color: var(--bg);
+}
+
+.contact .eyebrow {
+  color: var(--tinta);
+}
+
+.contact__in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 48px 64px;
+  padding-block: clamp(72px, 8vw, 120px);
+}
+
+.contact__main {
+  flex: 1 1 440px;
+  min-width: 0;
+}
+
+.contact__title {
+  margin-top: 16px;
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: clamp(56px, 8vw, 128px);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.contact__lead {
+  margin-top: 28px;
+  max-width: 24em;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--tinta-suave);
+}
+
+.contact__list {
+  flex: 1 1 420px;
+  min-width: 0;
+  max-width: 560px;
+  border-bottom: 1.5px solid rgba(33, 20, 14, 0.28);
+}
+
+.crow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 0;
+  border-top: 1.5px solid rgba(33, 20, 14, 0.28);
+  color: var(--bg);
+  text-decoration: none;
+}
+
+.crow__label {
+  display: block;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tinta);
+}
+
+.crow__value {
+  display: block;
+  margin-top: 6px;
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 28px);
+  overflow-wrap: anywhere;
+}
+
+.crow__icon {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  transition: transform 0.2s var(--ease-out);
+}
+
+@media (hover: hover) {
+  .crow:hover .crow__value {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+  .crow:hover .crow__icon {
+    transform: translate(3px, -3px);
+  }
+}
+
+/* ==========================================================================
+   Rodapé
+   ========================================================================== */
+
+.ftr {
+  border-top: 1px solid var(--line);
+}
+
+.ftr__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 40px;
+  padding-block: 36px;
+}
+
+.ftr__brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ftr__logo {
+  width: 48px;
+  height: 42px;
+  color: var(--txt);
+}
+
+.ftr__name {
+  font-weight: 800;
+  font-size: 18px;
+}
+.ftr__name span {
+  color: var(--txt2);
+  font-weight: 600;
+}
+
+.ftr__note {
+  max-width: 26em;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--txt2);
+}
+
+.ftr__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--txt2);
+}
+
+.ftr__replay {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  font-size: 13px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--line2);
+}
+
+@media (hover: hover) {
+  .ftr__replay:hover {
+    color: var(--caramelo);
+    text-decoration-color: var(--caramelo);
+  }
+}
+
+@media (max-width: 759.98px) {
+  .ftr__meta {
+    align-items: flex-start;
+  }
+}
+
+/* ==========================================================================
+   Página 404
+   ========================================================================== */
+
+.nf {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-block: 48px;
+}
+
+.nf__in {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  max-width: 680px;
+}
+
+.nf__logo {
+  width: 84px;
+  height: 73px;
+  color: var(--txt);
+}
+
+.nf__title {
+  font-family: var(--disp);
+  font-weight: 400;
+  font-size: clamp(56px, 10vw, 112px);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.nf__text {
+  max-width: 28em;
+  margin-bottom: 8px;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--txt2);
+}

@@ -1,0 +1,396 @@
+/* ==========================================================================
+   O Pingado (mascote). O desenho vem de src/components/Pingado.tsx;
+   aqui ficam as cores e os movimentos.
+   - .pingado--hero  → parado na página (acena de vez em quando, vapor, balança)
+   - .pingado--intro → sendo desenhado e enchido de café e leite (src/styles/intro.css usa o tempo --k)
+   ========================================================================== */
+
+.pingado {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+
+  /* paleta para fundo escuro (a do hero) */
+  --ink: #f4e8d4;
+  --milk: #e9d9bc;
+  --foam: #f6ebd2;
+  --foam-edge: none;
+  --offset: #c76a1f;
+  --wall: rgba(244, 232, 212, 0.4);
+  --steam: #f4e8d4;
+  --shadow: rgba(0, 0, 0, 0.28);
+  --hl0: 0.6;
+}
+
+/* paleta para fundo claro (a da abertura, que é papel cor de leite) */
+.pingado--intro {
+  --ink: #21140e;
+  --milk: #ebd9b8;
+  --foam: #fbf3e1;
+  --foam-edge: #21140e;
+  --offset: #e0a04a;
+  --wall: rgba(33, 20, 14, 0.28);
+  --steam: #21140e;
+  --shadow: rgba(33, 20, 14, 0.13);
+  --hl0: 0.8;
+}
+
+.pingado path,
+.pingado ellipse {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- peças ---------- */
+
+.pg-shadow {
+  fill: var(--shadow);
+}
+.pg-offset {
+  fill: var(--offset);
+}
+.pg-steam {
+  fill: none;
+  stroke: var(--steam);
+  stroke-width: 4;
+  opacity: var(--o, 1);
+}
+.pg-steam-1 {
+  --o: 0.9;
+}
+.pg-steam-2 {
+  --o: 0.6;
+  stroke-width: 3.5;
+}
+.pg-milk {
+  fill: var(--milk);
+}
+.pg-coffee {
+  fill: #9a5222;
+}
+.pg-crema {
+  fill: none;
+  stroke: #e0a04a;
+  stroke-width: 5;
+}
+.pg-hl {
+  fill: none;
+  stroke-width: 4;
+}
+.pg-hl-0 {
+  stroke: #fff8ea;
+  opacity: var(--hl0);
+}
+.pg-hl-1 {
+  stroke: #f4e8d4;
+  opacity: 0.3;
+}
+.pg-hl-2 {
+  stroke: #f4e8d4;
+  opacity: 0.2;
+}
+.pg-wall {
+  fill: none;
+  stroke: var(--wall);
+  stroke-width: 3;
+}
+.pg-foam {
+  fill: var(--foam);
+  stroke: var(--foam-edge);
+  stroke-width: 4.5;
+}
+.pg-foam-line {
+  fill: none;
+  stroke: #21140e;
+  stroke-width: 3;
+  opacity: 0.25;
+}
+.pg-glass {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 5;
+}
+.pg-ink {
+  fill: none;
+  stroke: #21140e;
+  stroke-width: 4.5;
+}
+.pg-logo {
+  color: #f4e8d4;
+}
+.pg-line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 4.5;
+}
+.pg-line--thin {
+  stroke-width: 4;
+}
+.pg-line--faint {
+  --o: 0.6;
+  stroke-width: 3.5;
+  opacity: var(--o);
+}
+.pg-shoe {
+  fill: #c76a1f;
+  stroke: var(--ink);
+  stroke-width: 4.5;
+}
+
+/* ==========================================================================
+   Movimentos de repouso (hero)
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .pingado--hero .pg-bob {
+    animation: pg-bob 5.2s ease-in-out infinite;
+  }
+  .pingado--hero .pg-shadow {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pg-shadow 5.2s ease-in-out infinite;
+  }
+  /* acena um pouquinho e descansa */
+  .pingado--hero .pg-wave {
+    transform-box: view-box;
+    transform-origin: 146px 304px;
+    animation: pg-wave 7.5s ease-in-out 1.4s infinite;
+  }
+  .pingado--hero .pg-steam {
+    animation: pg-steam 3.6s ease-in-out infinite;
+  }
+  .pingado--hero .pg-steam-2 {
+    animation-delay: -1.5s;
+  }
+}
+
+@keyframes pg-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pg-shadow {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.94);
+  }
+}
+
+@keyframes pg-wave {
+  0%,
+  24%,
+  100% {
+    transform: rotate(0deg);
+  }
+  4% {
+    transform: rotate(-9deg);
+  }
+  8% {
+    transform: rotate(5deg);
+  }
+  12% {
+    transform: rotate(-9deg);
+  }
+  16% {
+    transform: rotate(5deg);
+  }
+  20% {
+    transform: rotate(-7deg);
+  }
+}
+
+@keyframes pg-steam {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: var(--o, 1);
+  }
+  50% {
+    transform: translateY(-7px);
+    opacity: calc(var(--o, 1) * 0.55);
+  }
+}
+
+/* o pulinho quando alguém clica no Pingado (ver MascotButton) */
+.mascot[data-hop="true"] .pingado {
+  transform-origin: 50% 96%;
+  animation: pg-hop 0.62s cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+@keyframes pg-hop {
+  0% {
+    transform: translateY(0) scale(1, 1);
+  }
+  18% {
+    transform: translateY(4px) scale(1.04, 0.95);
+  }
+  50% {
+    transform: translateY(-26px) scale(0.97, 1.04);
+  }
+  78% {
+    transform: translateY(0) scale(1.03, 0.97);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+/* ==========================================================================
+   Movimentos da abertura (só existem dentro de .pingado--intro)
+   Cada peça traz o próprio atraso (--d) e duração (--t), em segundos; o --k acelera ou desacelera tudo.
+   ========================================================================== */
+
+.pingado--intro .pg-draw {
+  stroke-dasharray: 1 3;
+  animation: pg-draw calc(var(--t) * var(--k)) cubic-bezier(0.45, 0.05, 0.3, 1) calc(var(--d) * var(--k)) both;
+}
+
+/* traço sendo desenhado (pathLength=1 nos paths deixa isso valer para qualquer tamanho) */
+@keyframes pg-draw {
+  0% {
+    stroke-dashoffset: 1.03;
+    opacity: 0;
+  }
+  1% {
+    opacity: var(--o, 1);
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: var(--o, 1);
+  }
+}
+
+.pingado--intro .pg-fade {
+  animation: pg-fade calc(var(--t) * var(--k)) ease calc(var(--d) * var(--k)) both;
+}
+@keyframes pg-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: var(--o, 1);
+  }
+}
+
+/* o "vidro" desliza para a posição, deixando a sombra de cobre atrás */
+.pingado--intro .pg-slide {
+  animation: pg-slide calc(var(--t) * var(--k)) var(--ease-out) calc(var(--d) * var(--k)) both;
+}
+@keyframes pg-slide {
+  from {
+    transform: translate(-9px, -9px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+}
+
+/* as camadas de líquido sobem de baixo (o copo recorta o que passa das bordas).
+   Antes de começar (e no primeiro instante) a camada fica invisível: assim o copo nasce vazio
+   mesmo que o ponto de partida ainda apareça dentro dele. */
+.pingado--intro .pg-rise {
+  animation: pg-rise calc(var(--t) * var(--k)) cubic-bezier(0.3, 0.8, 0.3, 1) calc(var(--d) * var(--k)) both;
+}
+@keyframes pg-rise {
+  0% {
+    transform: translateY(var(--from));
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* espuma, logo e sapatos "estouram" no lugar com um leve exagero */
+.pingado--intro .pg-pop {
+  transform-box: view-box;
+  transform-origin: var(--ox) var(--oy);
+  animation: pg-pop calc(var(--t) * var(--k)) cubic-bezier(0.3, 1.5, 0.5, 1) calc(var(--d) * var(--k)) both;
+}
+@keyframes pg-pop {
+  from {
+    transform: scale(var(--sc, 0.5));
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* o fio de café / leite caindo lá de cima: a ponta desce, depois a cauda acompanha */
+.pingado--intro .pg-pour {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 1 3;
+  animation: pg-pour calc(var(--t) * var(--k)) linear calc(var(--d) * var(--k)) both;
+}
+.pingado--intro .pg-pour--edge {
+  stroke: var(--ink);
+  stroke-width: 11;
+}
+.pingado--intro .pg-pour--coffee {
+  stroke: #9a5222;
+  stroke-width: 7;
+}
+.pingado--intro .pg-pour--milk {
+  stroke: #fbf3e1;
+  stroke-width: 7;
+}
+@keyframes pg-pour {
+  0% {
+    stroke-dashoffset: 1.03;
+    animation-timing-function: cubic-bezier(0.35, 0, 0.8, 0.7);
+  }
+  40% {
+    stroke-dashoffset: 0;
+    animation-timing-function: linear;
+  }
+  62% {
+    stroke-dashoffset: 0;
+    animation-timing-function: cubic-bezier(0.35, 0, 0.8, 0.7);
+  }
+  100% {
+    stroke-dashoffset: -1.03;
+  }
+}
+
+/* o aceno final da abertura (o do hero é bem mais devagar e dura para sempre) */
+.pingado--intro .pg-wave {
+  transform-box: view-box;
+  transform-origin: 146px 304px;
+  animation: pg-wave-once calc(1.6s * var(--k)) ease-in-out calc(2.85s * var(--k)) both;
+}
+@keyframes pg-wave-once {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  16% {
+    transform: rotate(-10deg);
+  }
+  36% {
+    transform: rotate(5deg);
+  }
+  56% {
+    transform: rotate(-10deg);
+  }
+  76% {
+    transform: rotate(4deg);
+  }
+}
