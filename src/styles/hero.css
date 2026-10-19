@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Hero: título, texto, botões, números e o Pingado com as anotações.
+   Hero: título, texto, botões, números e o mascote com as anotações.
    ========================================================================== */
 
 /* ---------- entrada do conteúdo (começa quando a folha da abertura sobe) ----------
@@ -189,58 +189,85 @@ html.js .fade-in {
   }
 }
 
-/* ---------- o Pingado e as anotações ---------- */
+/* ---------- o mascote e as anotações ----------
+   Tudo aqui dentro é medido em porcentagem do quadrado .hero__art (do tamanho do "prato"),
+   então o conjunto escala junto, do celular à tela grande. As anotações e o balão ficam nos
+   espaços vazios em volta do desenho (a geometria do desenho está em src/styles/mascot.css). */
 
 .hero__art {
   position: relative;
   width: 100%;
-  max-width: 600px;
+  max-width: 560px;
   margin-inline: auto;
-  aspect-ratio: 1 / 1.02;
+  aspect-ratio: 1;
+  /* tamanho do prato: 1 = o círculo que contorna o desenho inteiro (com ~5% de folga).
+     0.96 deixa tudo dentro, com as mãos quase encostando na borda */
+  --disc: 0.96;
 }
 
 .hero__disc {
   position: absolute;
-  inset: 4%;
+  inset: calc((1 - var(--disc)) * 50%);
   border-radius: 50%;
-  background: var(--surf);
+  background:
+    radial-gradient(closest-side at 53% 46%, rgba(224, 160, 74, 0.14), rgba(224, 160, 74, 0) 80%),
+    var(--surf);
   border: 1px solid var(--line);
 }
 
 .hero__ring {
   position: absolute;
-  inset: -1%;
+  inset: calc((1 - var(--disc)) * 50% - 2.4%);
   border-radius: 50%;
   border: 1px dashed rgba(244, 232, 212, 0.12);
 }
 
-/* o botão invisível que envolve o desenho (clicou, ele pula e fala) */
+/* a sombra embaixo dos pés */
+.hero__shadow {
+  position: absolute;
+  left: 36%;
+  top: 93%;
+  width: 31%;
+  height: 3.6%;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.36);
+  filter: blur(3px);
+}
+
+/* a caixa que leva o mascote e o balão (só serve para os dois aparecerem juntos, com o prato) */
+.hero__mascot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* o botão invisível que envolve o desenho (clicou, ele pula e fala).
+   Ele cobre o quadrado todo, mas só o círculo responde ao clique. */
 .mascot {
   position: absolute;
-  left: 50%;
-  bottom: 2%;
-  width: 68%;
+  inset: 0;
+  pointer-events: auto;
   padding: 0;
   border: 0;
+  border-radius: 50%;
   background: none;
   cursor: pointer;
-  transform: translateX(-50%);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 .mascot:focus-visible {
   outline: 2px dashed var(--caramelo);
-  outline-offset: 8px;
-  border-radius: 24px;
+  outline-offset: 6px;
+  border-radius: 50%;
 }
 
-/* o balão de fala */
+/* o balão de fala: fica no espaço vazio embaixo da mão que acena, com a pontinha para o copo */
 .bubble {
   position: absolute;
-  left: 3%;
-  top: 7%;
+  left: 0;
+  top: 68%;
   z-index: 3;
-  max-width: 46%;
+  max-width: 38%;
   padding: 10px 16px 11px;
   border-radius: 18px;
   background: var(--leite);
@@ -251,7 +278,7 @@ html.js .fade-in {
   line-height: 1.1;
   opacity: 0;
   transform: translateY(8px) scale(0.9);
-  transform-origin: 70% 100%;
+  transform-origin: 100% 40%;
   pointer-events: none;
   transition:
     opacity 0.2s ease,
@@ -260,11 +287,11 @@ html.js .fade-in {
 .bubble::after {
   content: "";
   position: absolute;
-  right: 18%;
-  bottom: -9px;
-  border-left: 9px solid transparent;
-  border-right: 9px solid transparent;
-  border-top: 11px solid var(--leite);
+  right: -10px;
+  top: 30%;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 12px solid var(--leite);
 }
 .bubble[data-show="true"] {
   opacity: 1;
@@ -290,19 +317,18 @@ html.js .fade-in {
   }
 }
 
-/* anotações escritas à mão: front-end em cima, back-end embaixo */
+/* anotações escritas à mão: front-end em cima (aponta para o leite), back-end embaixo (aponta para o café) */
 .note {
   position: absolute;
-  width: 30%;
+  pointer-events: none;
 }
 .note--front {
-  left: 68%;
-  top: 15%;
+  left: 3%;
+  top: 2%;
 }
 .note--back {
-  left: 67%;
-  top: 76%;
-  width: 31%;
+  left: 72%;
+  top: 73%;
 }
 
 .note__title {
@@ -319,21 +345,29 @@ html.js .fade-in {
   color: var(--txt2);
 }
 
-.note__arrow {
+.arrow {
+  position: absolute;
   display: block;
-  width: 58%;
+  width: 22%;
   overflow: visible;
+  pointer-events: none;
 }
-.note__arrow path {
+.arrow path {
   fill: none;
   stroke: var(--caramelo);
-  stroke-width: 3;
+  stroke-width: 2.6px;
   stroke-linecap: round;
   stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
-.note--front .note__arrow {
-  margin: 2px 0 0 -6%;
+/* a seta do front-end vem do canto de cima e aponta para a espuma e o leite (o desenho da seta é espelhado) */
+.arrow--front {
+  left: 13.4%;
+  top: 12.2%;
+  transform: scaleX(-1);
 }
-.note--back .note__arrow {
-  margin: 0 0 2px -4%;
+/* a do back-end sobe da direita e aponta para o café, perto do fundo do copo */
+.arrow--back {
+  left: 68.8%;
+  top: 57.1%;
 }

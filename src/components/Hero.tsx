@@ -1,10 +1,10 @@
 import { projects } from "@/lib/projects";
 import { site } from "@/lib/site";
 import { idx } from "@/lib/style";
-import { arrowArt } from "./pingado-art";
+import { arrowArt } from "./arrows";
 import { ArrowDown } from "./Icons";
 import MascotButton from "./MascotButton";
-import Pingado from "./Pingado";
+import MascotImage from "./MascotImage";
 
 export default function Hero() {
   const total = projects.length;
@@ -44,27 +44,33 @@ export default function Hero() {
         </div>
 
         <div className="hero__art">
+          {/* o "prato" escuro atrás do mascote, com o anel tracejado e a sombra dos pés */}
           <div className="hero__disc fade-in" style={idx(1)} aria-hidden="true" />
           <div className="hero__ring fade-in" style={idx(2)} aria-hidden="true" />
+          <div className="hero__shadow fade-in" style={idx(2)} aria-hidden="true" />
 
-          <MascotButton>
-            <Pingado variant="hero" idPrefix="hero" decorative />
-          </MascotButton>
+          {/* o mascote aparece junto com o prato, quando a abertura termina */}
+          <div className="hero__mascot fade-in" style={idx(2)}>
+            <MascotButton>
+              <MascotImage />
+            </MascotButton>
+          </div>
 
+          {/* anotações escritas à mão: front-end em cima (o leite), back-end embaixo (o café) */}
           <div className="note note--front" aria-hidden="true">
             <div className="note__title">front-end</div>
             <div className="note__sub">o que você vê</div>
-            <svg className="note__arrow" viewBox="0 0 90 60" focusable="false">
-              <path d={arrowArt.up.line} />
-              <path d={arrowArt.up.head} />
-            </svg>
           </div>
+          <svg className="arrow arrow--front" viewBox="0 0 90 60" aria-hidden="true" focusable="false">
+            <path d={arrowArt.up.line} />
+            <path d={arrowArt.up.head} />
+          </svg>
 
+          <svg className="arrow arrow--back" viewBox="0 0 90 60" aria-hidden="true" focusable="false">
+            <path d={arrowArt.down.line} />
+            <path d={arrowArt.down.head} />
+          </svg>
           <div className="note note--back" aria-hidden="true">
-            <svg className="note__arrow" viewBox="0 0 90 60" focusable="false">
-              <path d={arrowArt.down.line} />
-              <path d={arrowArt.down.head} />
-            </svg>
             <div className="note__title">back-end</div>
             <div className="note__sub">o que sustenta</div>
           </div>

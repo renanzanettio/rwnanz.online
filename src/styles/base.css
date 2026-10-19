@@ -27,10 +27,10 @@ html {
 
 /* durante a abertura, a página não rola (o script do <head> liga e desliga isso).
    Em telas com barra de rolagem fixa (Windows, Linux) o espaço dela continua reservado,
-   então ele fica da cor da folha da abertura, em vez de aparecer como uma faixa escura. */
+   então ele fica da cor do fundo da abertura (o mesmo espresso do site), sem faixa diferente. */
 html[data-lock] {
   overflow: hidden;
-  background: var(--leite);
+  background: var(--bg);
 }
 
 body {

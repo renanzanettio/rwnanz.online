@@ -2,18 +2,21 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
+/** Como o mascote se chama nas falas e no leitor de tela. */
+const NAME = "Café Forte";
+
 const PHRASES = [
-  "oi! eu sou o Pingado.",
+  `oi! eu sou o ${NAME}.`,
   "bora de café?",
   "front em cima, back embaixo.",
-  "cuidado, tá quente!",
+  "forte por dentro, caprichado por fora.",
   "já viu os projetos?",
   "é só chamar.",
 ];
 
 /**
- * Transforma o Pingado do hero em um botão: ao clicar, ele pula e diz uma frase.
- * O desenho em si (children) continua sendo renderizado no servidor.
+ * Transforma o mascote do topo em um botão: ao clicar, ele pula e diz uma frase.
+ * A imagem (children) continua sendo renderizada no servidor.
  */
 export default function MascotButton({ children }: { children: ReactNode }) {
   const [phrase, setPhrase] = useState({ text: "", n: 0 });
@@ -42,11 +45,11 @@ export default function MascotButton({ children }: { children: ReactNode }) {
         data-hop={hop ? "true" : undefined}
         onClick={talk}
         onAnimationEnd={(e) => {
-          if (e.animationName === "pg-hop") setHop(false);
+          if (e.animationName === "cf-hop") setHop(false);
         }}
-        aria-label="Pingado, o mascote do site: um copo de café com leite sorridente. Ative para ele dizer algo."
+        aria-label={`${NAME}, o mascote do site: um copo de café forte com leite, sorrindo e mostrando os músculos. Ative para ele dizer algo.`}
       >
-        {children}
+        <span className="cf cf--bob">{children}</span>
       </button>
       <p className="bubble" data-show={show ? "true" : "false"} role="status" aria-live="polite">
         <span key={phrase.n}>{phrase.text}</span>

@@ -1,0 +1,78 @@
+/* ==========================================================================
+   O Café Forte (mascote), desenhado por um amigo do Renan.
+
+   O desenho é uma imagem pronta: public/mascote/cafe-forte.png (1239 × 1377 px).
+   Ela NÃO é editada aqui: o site só posiciona, balança e faz ela pular.
+   Os traços dos braços e pernas são brancos, então ela precisa de fundo escuro:
+   no topo do site fica sobre o "prato" (disco).
+
+   .cf é um quadrado do tamanho desse "prato", com o centro no centro do círculo que contorna
+   o desenho inteiro (com ~5% de folga). Todas as posições são porcentagens desse quadrado,
+   então o bloco continua certo se o tamanho do prato mudar.
+   Se trocar a imagem por outra com outras proporções, mude:
+     .cf__img  left / top / width  →  onde a imagem fica dentro do quadrado
+     transform-origin do pulo e do balanço  →  onde estão os pés
+   ========================================================================== */
+
+.cf {
+  position: absolute;
+  inset: 0;
+}
+
+.cf__img {
+  position: absolute;
+  left: -1.62%;
+  top: 1.78%;
+  width: 94.72%;
+  height: auto;
+  max-width: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* ---------- balançando de leve, parado na página ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .cf--bob {
+    transform-origin: 53% 95%;
+    animation: cf-bob 4.8s ease-in-out infinite;
+  }
+}
+
+@keyframes cf-bob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  50% {
+    transform: translateY(-1.1%) scale(1, 1.006);
+  }
+}
+
+/* ---------- o pulinho (clique no topo do site; a abertura usa o mesmo, em src/styles/intro.css) ----------
+   Agacha, estica no ar e cai achatando um pouco; o centro do movimento são os pés. */
+
+.mascot[data-hop="true"] .cf__img {
+  transform-origin: 56% 88.5%;
+  animation: cf-hop 0.66s cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+@keyframes cf-hop {
+  0% {
+    transform: translateY(0) scale(1, 1);
+  }
+  16% {
+    transform: translateY(1.2%) scale(1.045, 0.945);
+  }
+  48% {
+    transform: translateY(-5.5%) scale(0.97, 1.045);
+  }
+  78% {
+    transform: translateY(0) scale(1.035, 0.965);
+  }
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}

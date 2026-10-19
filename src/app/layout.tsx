@@ -7,7 +7,7 @@ import { site } from "@/lib/site";
 // A ordem importa: o que vem depois pode sobrescrever o que vem antes.
 import "../styles/tokens.css";
 import "../styles/base.css";
-import "../styles/pingado.css";
+import "../styles/mascot.css";
 import "../styles/intro.css";
 import "../styles/header.css";
 import "../styles/hero.css";

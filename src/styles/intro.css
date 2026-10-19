@@ -1,7 +1,11 @@
 /* ==========================================================================
-   A abertura: uma folha de papel cor de leite onde o Pingado é rabiscado, enchido de
-   café e leite, e acena. Depois a folha sobe, com uma borda ondulada de caramelo
-   (a "crema"), e revela a página.
+   A abertura: fundo espresso e uma xícara vista de cima. Gotas de leite caem no café e o leite vai
+   "escrevendo" a logo RWZ, traço por traço (latte art). No fim a xícara some, a logo encolhe e voa
+   até o lugar dela no cabeçalho, enquanto o fundo escuro se dissolve e revela a página.
+
+   O desenho da logo é o de src/components/logo-paths.ts, sem edição. O leite só a revela por uma
+   máscara que percorre o centro de cada traço (os percursos e os tempos estão em
+   src/components/intro-ink.ts).
 
    Quem decide se ela toca é o script do <head> (src/app/layout.tsx), que marca o <html>:
      data-intro="play"      → toca
@@ -9,12 +13,19 @@
      data-intro="skipping"  → a pessoa pulou: some com um fade rápido
      data-intro="done"      → acabou
    Sem JavaScript (sem a classe .js) ela nunca aparece.
-   Para mudar a velocidade, ajuste --k em tokens.css.
+   Para mudar a velocidade, ajuste --k em tokens.css (todos os tempos abaixo são multiplicados por ele).
+
+   Linha do tempo (em segundos, antes do --k; os traços ficam em intro-ink.ts):
+     0.04  a xícara aparece                  2.20  4ª gota: a perna de baixo (último traço)
+     0.50  1ª gota: o tronco do R            2.76  a logo "assenta" (INK_END) e a xícara some
+     0.92  2ª gota: gancho e barra           3.28  a logo decola (--intro-lift em tokens.css)
+     1.54  a diagonal (continua, sem gota)   3.60  o fundo escuro começa a sumir e a página entra
+     1.92  3ª gota: o risquinho cruzado      4.08  a logo pousa no cabeçalho (lift + --intro-lift-dur)
    ========================================================================== */
 
-/* o conteúdo da página entra logo depois que a folha começa a subir */
+/* o conteúdo da página entra quando o fundo escuro começa a sumir (a logo já está voando) */
 :root {
-  --enter-delay: calc(var(--intro-lift) + 0.12s);
+  --enter-delay: calc(var(--intro-lift) + var(--intro-lift-dur) * 0.4 + 0.04s);
 }
 html.js[data-intro="skip"],
 html.js[data-intro="skipping"] {
@@ -27,13 +38,27 @@ html.js[data-intro="skipping"] {
   inset: 0;
   z-index: 1000;
   touch-action: none;
-  /* tamanho do desenho: cabe em celulares e em telas baixas */
-  --stage: min(74vw, 50vh, 420px);
+  /* tamanho da xícara (cabe em celulares e em telas baixas) e da logo dentro dela */
+  --stage: min(92vw, 64vh, 620px);
+  --logo-w: calc(var(--stage) * 0.6);
+  --ink-ease: cubic-bezier(0.45, 0.05, 0.4, 1);
+
+  /* Para onde a logo voa: o IntroSkip mede a logo do cabeçalho e preenche --fx, --fy e --fs.
+     Isso aqui é só a estimativa para o caso de o JavaScript ainda não ter chegado. */
+  --fx: calc(var(--gutter) + 21px + (100vw - min(100vw, var(--maxw) + 2 * var(--gutter))) / 2 - 50vw);
+  --fy: calc(var(--header-h) / 2 - 50vh);
+  --fs: 0.13;
 }
 /* "dvh" acompanha a barra do navegador do celular; onde não existe, vale o "vh" acima */
 @supports (height: 1dvh) {
   .intro {
-    --stage: min(74vw, 50dvh, 420px);
+    --stage: min(92vw, 64dvh, 620px);
+    --fy: calc(var(--header-h) / 2 - 50dvh);
+  }
+}
+@media (max-width: 759.98px) {
+  .intro {
+    --fs: 0.19;
   }
 }
 
@@ -42,7 +67,7 @@ html.js[data-intro="skipping"] .intro {
   display: block;
 }
 
-/* enquanto a folha está parada ela segura os cliques; quando começa a subir, a página já responde */
+/* enquanto a abertura está parada ela segura os cliques; quando a logo decola, a página já responde */
 html.js[data-intro="play"] .intro {
   animation:
     intro-ptr var(--intro-lift) steps(1, end) forwards,
@@ -80,185 +105,295 @@ html[data-intro="skipping"] .intro * {
   }
 }
 
-/* ---------- a folha ---------- */
+/* ---------- o fundo ---------- */
 
+/* a mesma cor e o mesmo granulado do site, com uma luz quente atrás da xícara */
 .intro__panel {
   position: absolute;
   inset: 0;
   background:
-    var(--grain-dark),
-    radial-gradient(70% 55% at 50% 42%, rgba(255, 250, 236, 0.6), rgba(255, 250, 236, 0)),
-    var(--leite);
-  will-change: transform;
-  animation: intro-lift var(--intro-lift-dur) cubic-bezier(0.7, 0, 0.2, 1) var(--intro-lift) both;
+    var(--grain-light),
+    radial-gradient(62% 54% at 50% 47%, rgba(92, 55, 33, 0.5), rgba(92, 55, 33, 0)),
+    var(--bg);
+  will-change: opacity;
+  /* a logo já está a caminho quando o fundo começa a sumir (assim ela não cruza o texto da página) */
+  animation: intro-leave calc(var(--intro-lift-dur) * 0.6) ease-in-out calc(var(--intro-lift) + var(--intro-lift-dur) * 0.4) both;
 }
-
-@keyframes intro-lift {
+@keyframes intro-leave {
   to {
-    transform: translateY(calc(-100% - 90px));
+    opacity: 0;
   }
 }
 
-/* o que fica dentro da folha é cortado nas bordas da tela (os fios caem "de fora" dela) */
 .intro__clip {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(6px, 2.2vh, 22px);
-  padding-bottom: 2vh;
+  display: grid;
+  place-items: center;
 }
 
+/* um quadrado do tamanho da xícara, no meio da tela (a logo, em .intro__fly, usa o mesmo centro) */
 .intro__stage {
   position: relative;
-  flex: none;
   width: var(--stage);
-  aspect-ratio: 460 / 620;
+  aspect-ratio: 1;
 }
 
-/* o "prato" redondo atrás do desenho (o mesmo do hero) */
-.intro__ring {
+/* ---------- a xícara ---------- */
+
+.intro__cup {
   position: absolute;
-  left: 50%;
-  top: 52%;
-  width: 132%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: rgba(255, 248, 234, 0.42);
-  border: 1px solid rgba(33, 20, 14, 0.13);
-  transform: translate(-50%, -50%);
-  animation: ring-in calc(0.7s * var(--k)) ease calc(0.05s * var(--k)) both;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation:
+    cup-in calc(0.6s * var(--k)) cubic-bezier(0.2, 0.8, 0.2, 1) calc(0.04s * var(--k)) both,
+    cup-out calc(0.45s * var(--k)) ease-in calc((var(--ink-end, 2.7) + 0.16) * 1s * var(--k)) forwards;
 }
-.intro__ring::after {
-  content: "";
-  position: absolute;
-  inset: -5%;
-  border-radius: 50%;
-  border: 1px dashed rgba(33, 20, 14, 0.16);
-}
-@keyframes ring-in {
+@keyframes cup-in {
   from {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.8);
+    scale: 0.9;
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    scale: 1;
+  }
+}
+@keyframes cup-out {
+  to {
+    opacity: 0;
+    scale: 1.05;
   }
 }
 
-/* estrelinhas rabiscadas, no fim */
-.spark {
-  position: absolute;
-  aspect-ratio: 1;
+/* a borda de porcelana */
+.cup__rim {
+  fill: rgba(233, 217, 188, 0.1);
+  stroke: rgba(233, 217, 188, 0.5);
+  stroke-width: 1.2;
+}
+.cup__lip {
+  fill: none;
+  stroke: rgba(233, 217, 188, 0.28);
+  stroke-width: 1;
+}
+/* a crema: um anel acobreado na beirada do café */
+.cup__crema {
+  fill: none;
+  stroke: var(--cobre);
+  stroke-opacity: 0.5;
+  stroke-width: 1.8;
+}
+/* o reflexo da janela na superfície */
+.cup__shine {
+  fill: none;
+  stroke: rgba(255, 244, 222, 0.2);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+}
+/* a onda que o café faz quando a logo assenta */
+.cup__wave {
+  fill: none;
+  stroke: var(--caramelo);
+  stroke-width: 1.4;
   opacity: 0;
-  animation: spark-pop calc(0.5s * var(--k)) cubic-bezier(0.3, 1.5, 0.5, 1) calc(var(--sd) * var(--k)) both;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cup-wave calc(0.9s * var(--k)) cubic-bezier(0.2, 0.7, 0.3, 1) calc(var(--ink-end, 2.7) * 1s * var(--k)) forwards;
 }
-.spark--1 {
-  left: -3%;
-  top: 12%;
-  width: 11%;
-  fill: var(--caramelo);
-  --sd: 2.5s;
-}
-.spark--2 {
-  right: -5%;
-  top: 30%;
-  width: 8%;
-  fill: var(--cobre);
-  --sd: 2.65s;
-}
-.spark--3 {
-  left: -8%;
-  top: 58%;
-  width: 7%;
-  fill: var(--bg);
-  --sd: 2.8s;
-}
-@keyframes spark-pop {
+@keyframes cup-wave {
   from {
-    opacity: 0;
-    transform: scale(0.2) rotate(-40deg);
+    opacity: 0.85;
+    scale: 0.2;
   }
   to {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
+    opacity: 0;
+    scale: 1;
   }
 }
 
-/* legenda: "passando o café..." troca por "pronto! pode entrar" */
-.intro__caption {
-  display: grid;
-  margin: 0;
-  height: 1.25em;
-  font-family: var(--hand);
-  font-weight: 700;
-  font-size: clamp(26px, 5.6vw, 36px);
-  line-height: 1.1;
-  text-align: center;
-  color: var(--bg);
+/* ---------- a logo, escrita pelo leite ---------- */
+
+/* a logo ocupa o centro da tela; é ela (e só ela) que voa até o cabeçalho */
+.intro__fly {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: var(--logo-w);
+  height: calc(var(--logo-w) * 0.8677); /* 118 / 136, a proporção da logo */
+  pointer-events: none;
+  will-change: transform;
+  animation: intro-fly var(--intro-lift-dur) cubic-bezier(0.5, 0, 0.2, 1) var(--intro-lift) both;
 }
-.intro__cap {
-  grid-area: 1 / 1;
-  white-space: nowrap;
-  opacity: 0;
-}
-.intro__cap--a {
-  animation: cap-a calc(1.95s * var(--k)) ease calc(0.25s * var(--k)) both;
-}
-.intro__cap--b {
-  color: var(--tinta);
-  animation: cap-b calc(0.5s * var(--k)) cubic-bezier(0.3, 1.4, 0.5, 1) calc(2.25s * var(--k)) both;
-}
-@keyframes cap-a {
+/* um respiro (a logo cresce um pouco) e então ela encolhe e voa; --fx, --fy e --fs vêm do IntroSkip */
+@keyframes intro-fly {
   0% {
-    opacity: 0;
-    transform: translateY(8px);
+    translate: 0 0;
+    scale: 1;
+    animation-timing-function: ease-out;
   }
-  14%,
-  82% {
-    opacity: 1;
-    transform: none;
+  16% {
+    translate: 0 0;
+    scale: 1.05;
+    animation-timing-function: cubic-bezier(0.55, 0, 0.2, 1);
   }
   100% {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-}
-@keyframes cap-b {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.94);
-  }
-  to {
-    opacity: 1;
-    transform: none;
+    translate: var(--fx) var(--fy);
+    scale: var(--fs);
   }
 }
 
-.intro__dots i {
-  font-style: normal;
-  opacity: 0.15;
-  animation: dot calc(0.9s * var(--k)) ease-in-out calc(var(--di, 0) * 0.18s) 2;
+.ink {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: ink-breath calc(0.55s * var(--k)) ease-in-out calc((var(--ink-end, 2.7) + 0.04) * 1s * var(--k)) both;
 }
-.intro__dots i:nth-child(2) {
-  --di: 1;
-}
-.intro__dots i:nth-child(3) {
-  --di: 2;
-}
-@keyframes dot {
+@keyframes ink-breath {
   0%,
   100% {
-    opacity: 0.15;
+    scale: 1;
   }
-  40% {
+  45% {
+    scale: 1.035;
+  }
+}
+
+/* A máscara: um traço grosso que percorre o centro de cada traço da logo (pathLength=1, então o
+   deslocamento do tracejado vai de 1 a 0 e o leite aparece do começo ao fim do percurso). */
+.ink__pen {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.02;
+  animation: ink-draw calc(var(--dur) * 1s * var(--k)) var(--ink-ease) calc(var(--t) * 1s * var(--k)) forwards;
+}
+@keyframes ink-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* O brilho da ponta: um trecho curto (--hl) e mais fino do mesmo percurso, que anda junto com a ponta
+   do leite (mesmo tempo e mesma curva) e, quando o traço acaba, escorre para fora do fim dele. Fica
+   invisível até a gota cair (a ponta redonda do tracejado apareceria como uma bolinha antes da hora). */
+.ink__pen--head {
+  opacity: 0;
+  stroke-dasharray: var(--hl) 2;
+  stroke-dashoffset: var(--h0);
+  animation:
+    ink-head-on 0.01s steps(1, end) calc(var(--t) * 1s * var(--k)) forwards,
+    ink-head-run calc(var(--dur) * 1s * var(--k)) var(--ink-ease) calc(var(--t) * 1s * var(--k)) forwards,
+    ink-head-exit calc(0.22s * var(--k)) ease-in calc((var(--t) + var(--dur)) * 1s * var(--k)) forwards;
+}
+@keyframes ink-head-on {
+  to {
     opacity: 1;
   }
 }
+@keyframes ink-head-run {
+  to {
+    stroke-dashoffset: var(--h1);
+  }
+}
+@keyframes ink-head-exit {
+  from {
+    stroke-dashoffset: var(--h1);
+  }
+  to {
+    stroke-dashoffset: -1.7;
+    opacity: 0;
+  }
+}
+
+/* as camadas, de baixo para cima: a borda acaramelada (o leite se misturando à crema), o leite,
+   o brilho da ponta e, no fim, a logo lisa */
+.ink__halo {
+  color: var(--caramelo);
+  stroke-width: 3.4;
+  opacity: 0.5;
+  animation: ink-fade-out calc(0.3s * var(--k)) ease calc((var(--ink-end, 2.7) + 0.05) * 1s * var(--k)) forwards;
+}
+.ink__milk {
+  color: var(--txt);
+  animation: ink-fade-out calc(0.1s * var(--k)) linear calc((var(--ink-end, 2.7) + 0.3) * 1s * var(--k)) forwards;
+}
+.ink__head {
+  color: #fffaf0;
+  animation: ink-fade-out calc(0.25s * var(--k)) ease calc((var(--ink-end, 2.7) + 0.02) * 1s * var(--k)) forwards;
+}
+.ink__final {
+  color: var(--txt); /* a mesma cor da logo do cabeçalho */
+  opacity: 0;
+  animation: ink-fade-in calc(0.22s * var(--k)) ease calc((var(--ink-end, 2.7) + 0.02) * 1s * var(--k)) forwards;
+}
+@keyframes ink-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes ink-fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+/* a gota cai de cima e some ao tocar o café, onde o traço começa */
+.ink__drop {
+  fill: var(--txt);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ink-drop calc(0.3s * var(--k)) cubic-bezier(0.5, 0, 0.9, 0.55) calc((var(--t) - 0.3) * 1s * var(--k)) forwards;
+}
+@keyframes ink-drop {
+  0% {
+    opacity: 0;
+    translate: 0 -62px;
+    scale: 0.75 1.35;
+  }
+  14% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+    translate: 0 -2px;
+    scale: 0.85 1.3;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 0;
+    scale: 1.15 0.6;
+  }
+}
+
+/* a ondinha que a gota faz no café */
+.ink__ripple {
+  fill: none;
+  stroke: var(--txt);
+  stroke-width: 0.9;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ink-ripple calc(0.75s * var(--k)) cubic-bezier(0.15, 0.7, 0.3, 1) calc(var(--t) * 1s * var(--k)) forwards;
+}
+@keyframes ink-ripple {
+  from {
+    opacity: 0.8;
+    scale: 0.35;
+  }
+  to {
+    opacity: 0;
+    scale: 5.5;
+  }
+}
+
+/* ---------- dica para pular ---------- */
 
 .intro__hint {
   position: absolute;
@@ -271,34 +406,42 @@ html[data-intro="skipping"] .intro * {
   letter-spacing: 0.16em;
   text-align: center;
   text-transform: uppercase;
-  color: rgba(33, 20, 14, 0.55);
+  color: rgba(244, 232, 212, 0.5);
   opacity: 0;
-  animation: hint-in calc(0.5s * var(--k)) ease calc(0.9s * var(--k)) both;
+  animation:
+    hint-in calc(0.5s * var(--k)) ease calc(0.9s * var(--k)) both,
+    hint-out calc(0.25s * var(--k)) ease var(--intro-lift) forwards;
 }
 @keyframes hint-in {
   to {
     opacity: 1;
   }
 }
+@keyframes hint-out {
+  to {
+    opacity: 0;
+  }
+}
 
-/* a borda ondulada pendurada embaixo da folha: sobe junto com ela */
-.intro__edge {
-  position: absolute;
-  left: 0;
-  top: calc(100% - 1px);
-  width: 100%;
-  height: clamp(28px, 5vw, 56px);
-  overflow: visible;
+/* ---------- o cabeçalho, junto com a abertura ---------- */
+
+/* A logo do cabeçalho fica escondida até a logo da abertura pousar em cima dela (as duas são
+   idênticas, então a troca não se vê). Quem pula a abertura vê a logo na hora. */
+html.js[data-intro="play"] .brand__logo {
+  opacity: 0;
+  animation: brand-land 0.01s steps(1, end) calc(var(--intro-lift) + var(--intro-lift-dur)) forwards;
 }
-.intro__edge-fill {
-  fill: var(--leite);
+@keyframes brand-land {
+  to {
+    opacity: 1;
+  }
 }
-.intro__edge-line {
-  fill: none;
-  stroke: var(--caramelo);
-  stroke-width: 4;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
+/* o nome e o menu aparecem logo depois que a folha começa a sumir */
+html.js .brand__name,
+html.js .nav,
+html.js .hdr__cta,
+html.js .nav-toggle {
+  animation: fade-in 0.8s ease calc(var(--enter-delay) + 0.1s) backwards;
 }
 
 /* quem pediu menos movimento não vê a abertura */
