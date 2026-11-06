@@ -1,47 +1,85 @@
-// Dados gerais do site. Mexeu aqui, mudou no site inteiro.
-
 export const site = {
   name: "Renan Zanetti",
   domain: "rwnanz.online",
   url: "https://rwnanz.online",
-  locale: "pt_BR",
-  title: "Renan Zanetti — Desenvolvedor web, mobile e visão computacional",
-  description:
-    "Portfólio de Renan Zanetti (RWZ): projetos de web, mobile e visão computacional, do front ao back, camada por camada.",
   email: "renanzanettio@gmail.com",
   github: "https://github.com/renanzanettio",
   githubLabel: "github.com/renanzanettio",
   linkedin: "https://www.linkedin.com/in/renan-zanetti/",
   linkedinLabel: "linkedin.com/in/renan-zanetti",
-  /** mostra a plaquinha "Disponível para novos projetos" no topo */
   available: true,
-  nav: [
-    { href: "#projetos", label: "Projetos" },
-    { href: "#camadas", label: "Camadas" },
-    { href: "#sobre", label: "Sobre" },
-    { href: "#contato", label: "Contato" },
-  ],
-  layers: {
-    front: {
-      intro:
-        "Interfaces web com Next.js e React, e apps mobile com React Native e Jetpack Compose.",
-      skills: ["JavaScript", "React", "Next.js", "React Native", "Kotlin", "Jetpack Compose", "Bootstrap"],
-    },
-    back: {
-      intro:
-        "APIs em Node.js e Express, bancos MySQL, MongoDB e SQLite, e visão computacional com Python e MediaPipe.",
-      skills: ["Node.js", "Express", "PHP", "Python", "Java", "C#", "MySQL", "MongoDB", "SQLite", "MediaPipe"],
-    },
-  },
-  about: {
-    text: "Hoje foco em projetos de desenvolvimento web, mobile e visão computacional, em busca de uma posição como desenvolvedor júnior. Baseado no Brasil e disponível para novos projetos.",
+} as const;
+
+export const skills = {
+  front: ["JavaScript", "TypeScript", "React", "Next.js", "React Native", "Kotlin", "Jetpack Compose", "Bootstrap"],
+  back: ["Node.js", "Express", "PHP", "Python", "Java", "C#", "MySQL", "MongoDB", "SQLite", "MediaPipe"],
+};
+
+export const siteCopy = {
+  "pt-BR": {
+    title: "Renan Zanetti — Desenvolvedor web, mobile e visão computacional",
+    description: "Portfólio de Renan Zanetti (RWZ), com projetos de desenvolvimento web, mobile e visão computacional.",
+    role: "Desenvolvedor júnior",
+    availability: "Aberto a vagas de dev júnior e freelances",
+    headline: "Do front ao back,",
+    headlineAccent: "camada por camada.",
+    intro: ", desenvolvedor júnior. Trabalho com web, mobile e visão computacional. Alguns dos meus projetos estão publicados em subdomínios do rwnanz.online.",
+    introduction: "Sou o",
+    viewProjects: "Ver projetos",
+    projectCount: "projetos",
+    liveCount: "no ar agora",
+    fields: "frentes de trabalho",
+    focus: ["Desenvolvimento web", "Desenvolvimento mobile", "Visão computacional"],
+    projectsTitle: "O que já saiu do forno",
+    projectsIntro: "Uma seleção de projetos acadêmicos e pessoais. Cada página conta como o projeto funciona e as decisões por trás dele.",
+    catalogIntro: "Projetos acadêmicos, pessoais, comerciais e trabalhos freelance.",
+    layersTitle: "Duas camadas, um produto",
+    layersIntro: "No topo, o que a pessoa vê e toca. Na base, o que processa, guarda e sustenta. Eu trabalho nas duas.",
+    frontHint: "o que você vê",
+    backHint: "o que sustenta",
+    frontIntro: "Interfaces web com Next.js e React, e apps mobile com React Native e Jetpack Compose.",
+    backIntro: "APIs em Node.js e Express, bancos MySQL, MongoDB e SQLite, e visão computacional com Python e MediaPipe.",
+    about: "Estudo Desenvolvimento de Software Multiplataforma na Fatec de Registro e tenho formação técnica pela Etec. Busco uma vaga como desenvolvedor júnior e também aceito projetos freelance.",
     path: [
-      { place: "Fatec de Registro", what: "Desenvolvimento de Software Multiplataformas" },
+      { place: "Fatec de Registro", what: "Desenvolvimento de Software Multiplataforma" },
       { place: "Etec de Registro", what: "Técnico em Desenvolvimento de Sistemas" },
       { place: "PRODESP / Stefanini", what: "Suporte de TI e infraestrutura" },
     ],
+    contactTitle: ["Vamos", "conversar?"],
+    contactLead: "Tem uma vaga, uma ideia ou um projeto? Me escreve.",
+  },
+  en: {
+    title: "Renan Zanetti — Web, mobile, and computer vision developer",
+    description: "Renan Zanetti’s portfolio, featuring web, mobile, and computer vision projects.",
+    role: "Junior developer",
+    availability: "Open to junior roles and freelance work",
+    headline: "From front to back,",
+    headlineAccent: "layer by layer.",
+    intro: ", a junior developer working on web, mobile, and computer vision projects. Some of them are live on subdomains of rwnanz.online.",
+    introduction: "I’m",
+    viewProjects: "View projects",
+    projectCount: "projects",
+    liveCount: "live now",
+    fields: "areas of work",
+    focus: ["Web development", "Mobile development", "Computer vision"],
+    projectsTitle: "Selected projects",
+    projectsIntro: "A selection of academic and personal projects. Each page explains how the project works and the decisions behind it.",
+    catalogIntro: "Academic, personal, commercial, and freelance projects.",
+    layersTitle: "Two layers, one product",
+    layersIntro: "On top is what people see and use. Underneath is what processes, stores, and supports it. I work on both.",
+    frontHint: "what you see",
+    backHint: "what supports it",
+    frontIntro: "Web interfaces with Next.js and React, and mobile apps with React Native and Jetpack Compose.",
+    backIntro: "Node.js and Express APIs, MySQL, MongoDB, and SQLite databases, and computer vision with Python and MediaPipe.",
+    about: "I study Multiplatform Software Development at Fatec de Registro and earned a technical qualification at Etec. I’m looking for a junior developer role and am available for freelance projects.",
+    path: [
+      { place: "Fatec de Registro", what: "Multiplatform Software Development" },
+      { place: "Etec de Registro", what: "Technical qualification in Systems Development" },
+      { place: "PRODESP / Stefanini", what: "IT support and infrastructure" },
+    ],
+    contactTitle: ["Let’s", "talk?"],
+    contactLead: "Have a job opening, an idea, or a project? Send me a message.",
   },
 } as const;
 
-/** ano do rodapé (calculado quando o site é gerado) */
 export const currentYear = new Date().getFullYear();

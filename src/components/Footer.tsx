@@ -12,16 +12,10 @@ export default function Footer() {
           </span>
         </div>
 
-        <p className="ftr__note">Rota nova sempre que eu terminar algo que valha a pena mostrar.</p>
-
         <div className="ftr__meta">
           <span>
             © {currentYear} {site.name}
           </span>
-          {/* link comum (recarrega a página) de propósito: o ?intro faz a abertura rodar de novo */}
-          <a className="ftr__replay" href="/?intro">
-            rever a abertura
-          </a>
         </div>
       </div>
     </footer>

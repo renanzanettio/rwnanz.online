@@ -12,7 +12,6 @@ export const MASCOT = { src: "/mascote/cafe-forte.png", width: 1239, height: 137
 
 /**
  * Largura em que a imagem aparece (no computador ~540px; no celular quase a tela toda).
- * O topo do site e a abertura usam o mesmo valor, assim o navegador baixa uma versão só.
  */
 const SIZES = "(min-width: 960px) 540px, 92vw";
 
@@ -27,7 +26,7 @@ export default function MascotImage() {
       loading="eager"
       fetchPriority="high"
       draggable={false}
-      // decorativa: quem descreve o mascote é o botão (ou, na abertura, a folha toda fica escondida do leitor de tela)
+      // A descrição do mascote fica no botão.
       alt=""
     />
   );

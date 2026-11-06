@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { homePath, locales, projectsPath, ui, type Locale } from "@/lib/locale";
 import { site } from "@/lib/site";
 import Logo from "./Logo";
 
@@ -8,7 +10,25 @@ import Logo from "./Logo";
  * Cabeçalho fixo no topo. No celular o menu vira um painel que abre pelo botão (hambúrguer).
  * Sem JavaScript, os links aparecem em linha normalmente.
  */
-export default function Header() {
+export default function Header({
+  locale,
+  page,
+  slug,
+}: {
+  locale: Locale;
+  page: "home" | "projects" | "detail";
+  slug?: string;
+}) {
+  const text = ui[locale];
+  const home = homePath(locale);
+  const onHome = page === "home";
+  const homeSection = (hash: string) => `${onHome ? "" : home}#${hash}`;
+  const nav = [
+    { href: onHome ? "#projetos" : projectsPath(locale), label: text.projects },
+    { href: homeSection("camadas"), label: text.layers },
+    { href: homeSection("sobre"), label: text.about },
+    { href: homeSection("contato"), label: text.contact },
+  ];
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
@@ -48,12 +68,12 @@ export default function Header() {
   return (
     <header className="hdr" ref={root}>
       <div className="wrap hdr__bar">
-        <a className="brand" href="#topo" aria-label={`${site.domain}, voltar ao topo`} onClick={close}>
+        <Link className="brand" href={onHome ? "#topo" : home} aria-label={`${site.domain} · ${text.homeAction}`} onClick={close}>
           <Logo className="brand__logo" />
           <span className="brand__name">
             rwnanz<span>.online</span>
           </span>
-        </a>
+        </Link>
 
         <button
           ref={toggle}
@@ -63,31 +83,44 @@ export default function Header() {
           aria-controls="menu"
           onClick={() => setOpen((v) => !v)}
         >
-          <span className="sr-only">{open ? "Fechar menu" : "Abrir menu"}</span>
+          <span className="sr-only">{open ? text.menuClose : text.menuOpen}</span>
           <span className="nav-toggle__bars" aria-hidden="true">
             <i />
             <i />
           </span>
         </button>
 
-        <nav id="menu" className={open ? "nav is-open" : "nav"} aria-label="Principal">
+        <nav id="menu" className={open ? "nav is-open" : "nav"} aria-label={text.menu}>
           <ul className="nav__list">
-            {site.nav.map((item) => (
+            {nav.map((item) => (
               <li key={item.href}>
-                <a href={item.href} onClick={close}>
+                <Link href={item.href} onClick={close}>
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <a className="btn ghost nav__cta" href="#contato" onClick={close}>
-            Falar comigo
-          </a>
         </nav>
 
-        <a className="btn ghost hdr__cta" href="#contato">
-          Falar comigo
-        </a>
+        <div className="hdr__tools">
+          <nav className="lang" aria-label={text.language}>
+            {locales.map((language) => {
+              const label = language === "pt-BR" ? "Português" : "English";
+              const shortLabel = language === "pt-BR" ? "PT" : "EN";
+              const href = page === "projects" || page === "detail"
+                ? projectsPath(language, slug)
+                : homePath(language);
+              return language === locale ? (
+                <span key={language} lang={language} aria-current="true" aria-label={label}>{shortLabel}</span>
+              ) : (
+                <a key={language} href={href} lang={language} hrefLang={language} aria-label={label}>{shortLabel}</a>
+              );
+            })}
+          </nav>
+          <Link className="btn ghost hdr__cta" href={homeSection("contato")}>
+            {text.contactAction}
+          </Link>
+        </div>
       </div>
     </header>
   );

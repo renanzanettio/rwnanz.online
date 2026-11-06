@@ -1,84 +1,65 @@
 import Image from "next/image";
-import { statusMeta, type Project } from "@/lib/projects";
-import { ArrowUpRight } from "./Icons";
+import Link from "next/link";
+import { projectsPath, ui, type Locale } from "@/lib/locale";
+import { projectCategories, projectStatuses, type Project } from "@/lib/projects";
+import { ArrowRight, ArrowUpRight } from "./Icons";
+import styles from "./ProjectLayout.module.css";
 
-const NEW_TAB = <span className="sr-only"> (abre em uma nova aba)</span>;
+export function ProjectMeta({ project, locale }: { project: Project; locale: Locale }) {
+  const status = projectStatuses[project.status];
+  return (
+    <div className={styles.meta}>
+      <p className={styles.category}>{projectCategories[project.category][locale]}</p>
+      <span className={styles.status}>
+        <i className={`dot dot--${status.tone}`} aria-hidden="true" />
+        {status.label[locale]}
+      </span>
+    </div>
+  );
+}
 
-export default function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const { label, tone } = statusMeta[project.status];
-  const cover = project.images?.[0];
+export default function ProjectCard({
+  project,
+  locale,
+  titleLevel,
+}: {
+  project: Project;
+  locale: Locale;
+  titleLevel: 2 | 3;
+}) {
+  const Title = titleLevel === 2 ? "h2" : "h3";
   const titleId = `projeto-${project.slug}`;
-  const repoText = project.repoLabel ? `${project.repoLabel} no GitHub` : "Repositório";
+  const text = ui[locale];
 
   return (
-    <article className="card reveal" aria-labelledby={titleId}>
-      <div className="card__top">
-        <span className="card__num" aria-hidden="true">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-        <span className="status">
-          <i className={`dot dot--${tone}`} aria-hidden="true" />
-          {label}
-        </span>
-      </div>
-
-      {cover && (
-        <div className="card__cover">
-          <Image
-            src={cover}
-            alt={`Captura de tela do projeto ${project.name}`}
-            fill
-            sizes="(min-width: 1100px) 600px, 100vw"
-          />
+    <article className={project.logo ? `${styles.card} ${styles.cardWithLogo}` : styles.card} aria-labelledby={titleId}>
+      {project.logo && (
+        <div className={styles.cardLogo}>
+          <Image src={project.logo} alt="" width={80} height={80} unoptimized />
         </div>
       )}
-
-      <h3 id={titleId} className="card__title">
-        {project.name}
-      </h3>
-      <p className="card__sum">{project.summary}</p>
-      <p className="card__desc">{project.description}</p>
-
-      {/* a divisão em camadas: leite (front) em cima, café (back) embaixo */}
-      <div className="stack">
-        <p className="stack__row stack__row--front">
-          <span className="stack__tag">Front</span>
-          <span>{project.front.join(" · ")}</span>
-        </p>
-        <span className="stack__line" aria-hidden="true" />
-        <p className="stack__row stack__row--back">
-          <span className="stack__tag">Back</span>
-          <span>{project.back.join(" · ")}</span>
-        </p>
+      <div className={styles.cardContent}>
+        <ProjectMeta project={project} locale={locale} />
+        <Title id={titleId} className={styles.cardTitle}>{project.name}</Title>
+        <p className={styles.cardSummary}>{project.copy[locale].summary}</p>
       </div>
-
-      {project.siteUrl || project.repoUrl ? (
-        <div className="card__actions">
-          {project.siteUrl && (
-            <a className="btn pri" href={project.siteUrl} target="_blank" rel="noopener noreferrer">
-              Abrir projeto
-              <ArrowUpRight />
-              {NEW_TAB}
-            </a>
-          )}
-          {project.repoUrl &&
-            (project.siteUrl ? (
-              <a className="lnk" href={project.repoUrl} target="_blank" rel="noopener noreferrer">
-                {repoText}
-                <ArrowUpRight />
-                {NEW_TAB}
-              </a>
-            ) : (
-              <a className="btn ghost" href={project.repoUrl} target="_blank" rel="noopener noreferrer">
-                Ver no GitHub
-                <ArrowUpRight />
-                {NEW_TAB}
-              </a>
-            ))}
-        </div>
-      ) : (
-        <p className="card__soon">Ainda sem link público.</p>
-      )}
+      <div className={styles.actions}>
+        <Link className="btn ghost" href={projectsPath(locale, project.slug)} aria-describedby={titleId}>
+          {text.projectAction} <ArrowRight />
+        </Link>
+        {project.siteUrl && (
+          <a
+            className="lnk"
+            href={project.siteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-describedby={titleId}
+          >
+            {text.projectSite} <ArrowUpRight />
+            <span className="sr-only">{text.newTab}</span>
+          </a>
+        )}
+      </div>
     </article>
   );
 }

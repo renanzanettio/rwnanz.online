@@ -93,18 +93,48 @@
   }
 }
 
-/* o botão "Falar comigo" existe duas vezes: um no cabeçalho largo, outro dentro do painel do celular */
-.nav__cta {
-  display: none;
-}
-
-.hdr__cta {
+.hdr__tools {
   grid-column: 3;
   grid-row: 1;
   justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hdr__cta {
   min-height: 42px;
-  padding: 8px 20px;
+  padding: 8px 16px;
   font-size: 15px;
+}
+
+.lang {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.lang a,
+.lang span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 5px;
+  color: var(--txt2);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.lang a:hover,
+.lang [aria-current] {
+  color: var(--caramelo);
+}
+
+@media (max-width: 1023px) {
+  .hdr__cta {
+    display: none;
+  }
 }
 
 .nav-toggle {
@@ -115,13 +145,13 @@
 
 @media (max-width: 759.98px) {
   .hdr__bar {
-    grid-template-columns: 1fr auto;
-    column-gap: 16px;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    column-gap: 8px;
     padding-block: 8px;
   }
 
-  .hdr__cta {
-    display: none;
+  .hdr__tools {
+    grid-column: 2;
   }
 
   /* sem JavaScript o botão ☰ não funcionaria: o menu fica em uma segunda linha, sempre visível */
@@ -132,10 +162,12 @@
   html:not(.js) .nav__list {
     width: 100%;
     justify-content: space-between;
+    gap: 4px 8px;
+    flex-wrap: wrap;
   }
 
   html.js .nav-toggle {
-    grid-column: 2;
+    grid-column: 3;
     grid-row: 1;
     display: inline-flex;
     align-items: center;
@@ -227,16 +259,25 @@
     border-top: 0;
   }
 
-  html.js .nav__cta {
-    display: inline-flex;
-    margin-top: 18px;
-    width: 100%;
-  }
 }
 
 @keyframes menu-in {
   from {
     opacity: 0;
     transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 359px) {
+  .brand {
+    gap: 7px;
+  }
+
+  .brand__logo {
+    width: 34px;
+  }
+
+  .brand__name {
+    font-size: 16px;
   }
 }
