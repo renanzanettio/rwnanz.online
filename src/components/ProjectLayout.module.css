@@ -565,12 +565,8 @@
 }
 
 .webScreen .screen {
-  aspect-ratio: 16 / 10;
-}
-
-.webScreen img {
-  height: 100%;
-  object-fit: contain;
+  border: 1px solid var(--line2);
+  border-radius: 8px;
 }
 
 .flowCopy {
@@ -712,7 +708,6 @@
 .galleryBrowser {
   width: min(100%, 225px);
   max-height: 100%;
-  aspect-ratio: 16 / 10;
   border-radius: 5px;
 }
 
@@ -720,6 +715,12 @@
   display: block;
   width: 100%;
   height: auto;
+}
+
+.galleryPhone img {
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
 }
 
 .galleryCaption {
@@ -800,6 +801,10 @@
   .flowStep {
     display: grid;
     grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  }
+
+  .flowStep:has(.webScreen) {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .flowStep + .flowStep {
