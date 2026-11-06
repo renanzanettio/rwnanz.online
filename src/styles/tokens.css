@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Variáveis do site: cores, medidas e o tempo da abertura.
+   Variáveis do site: cores e medidas.
    Quer mudar a cara do site? Quase tudo começa aqui.
    ========================================================================== */
 
@@ -28,17 +28,6 @@
   --header-h: 72px;
   --radius-card: 20px;
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
-
-  /* ---- abertura (o leite escrevendo a logo, que depois voa para o cabeçalho) ----
-     --k é a velocidade: 1 = ritmo original, 0.8 = mais rápida, 1.3 = mais calma.
-     Todos os tempos da abertura (src/styles/intro.css) são multiplicados por ele;
-     o quadro a quadro está descrito no começo desse arquivo. */
-  --k: 0.9;
-  /* quando a logo decola e o fundo começa a sumir (uns 0.5 s depois do último traço, ver INK_END
-     em src/components/intro-ink.ts) e quanto o voo demora */
-  --intro-lift: calc(3.28s * var(--k));
-  --intro-lift-dur: calc(0.8s * var(--k));
-  --intro-end: calc(var(--intro-lift) + var(--intro-lift-dur) + 0.08s);
 
   /* ---- textura de papel (granulado bem leve, sem imagem externa) ---- */
   --grain-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .957 0 0 0 0 .91 0 0 0 0 .83 0 0 0 .2 -.08'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E");

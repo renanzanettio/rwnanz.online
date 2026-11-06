@@ -1,24 +1,26 @@
-import { site } from "@/lib/site";
+import { ui, type Locale } from "@/lib/locale";
+import { site, siteCopy } from "@/lib/site";
 import { ArrowRight, ArrowUpRight } from "./Icons";
 
 const rows = [
-  { label: "E-mail", value: site.email, href: `mailto:${site.email}`, external: false },
+  { label: "Email", value: site.email, href: `mailto:${site.email}`, external: false },
   { label: "GitHub", value: site.githubLabel, href: site.github, external: true },
   { label: "LinkedIn", value: site.linkedinLabel, href: site.linkedin, external: true },
 ] as const;
 
-export default function Contact() {
+export default function Contact({ locale }: { locale: Locale }) {
+  const copy = siteCopy[locale];
   return (
     <section className="contact" id="contato" aria-labelledby="contato-titulo">
       <div className="wrap contact__in">
         <div className="contact__main">
-          <p className="eyebrow">Contato</p>
+          <p className="eyebrow">{ui[locale].contact}</p>
           <h2 id="contato-titulo" className="contact__title">
-            Vamos
+            {copy.contactTitle[0]}
             <br />
-            conversar?
+            {copy.contactTitle[1]}
           </h2>
-          <p className="contact__lead">Tem uma vaga, uma ideia ou um projeto? Me escreve.</p>
+          <p className="contact__lead">{copy.contactLead}</p>
         </div>
 
         <ul className="contact__list">
@@ -34,7 +36,7 @@ export default function Contact() {
                   <span className="crow__value">{row.value}</span>
                 </span>
                 {row.external ? <ArrowUpRight className="crow__icon" /> : <ArrowRight className="crow__icon" />}
-                {row.external && <span className="sr-only"> (abre em uma nova aba)</span>}
+                {row.external && <span className="sr-only">{ui[locale].newTab}</span>}
               </a>
             </li>
           ))}

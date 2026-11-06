@@ -2,26 +2,56 @@
    Hero: título, texto, botões, números e o mascote com as anotações.
    ========================================================================== */
 
-/* ---------- entrada do conteúdo (começa quando a folha da abertura sobe) ----------
-   Só mexem em posição/transparência quando o JavaScript existe (html.js);
-   o texto principal só desliza (sem sumir), para a página já "existir" por baixo da abertura. */
+/* Entrada curta, sem sobrepor o conteúdo ou prender a rolagem. */
+@media (prefers-reduced-motion: no-preference) {
+  .portfolio-home .brand__logo {
+    animation: brand-in 600ms var(--ease-out) both;
+  }
+
+  .hero .rise {
+    animation: rise 420ms var(--ease-out) calc(var(--i, 0) * 40ms) both;
+  }
+
+  .hero .fade-in {
+    animation: fade-in 480ms ease calc(var(--i, 0) * 40ms) both;
+  }
+
+  .hero__steam {
+    animation: steam 600ms ease-out both;
+  }
+}
+
+@keyframes brand-in {
+  from { opacity: 0.35; transform: translateY(5px) scale(0.92); }
+}
 
 @keyframes rise {
-  from {
-    translate: 0 22px;
-  }
-}
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
+  from { transform: translateY(10px); }
 }
 
-html.js .rise {
-  animation: rise 0.9s var(--ease-out) calc(var(--enter-delay) + var(--i, 0) * 90ms) backwards;
+@keyframes fade-in {
+  from { opacity: 0.35; }
 }
-html.js .fade-in {
-  animation: fade-in 1s ease calc(var(--enter-delay) + var(--i, 0) * 120ms) backwards;
+
+@keyframes steam {
+  from { opacity: 0; transform: translateY(9px); }
+  35% { opacity: 0.55; }
+  to { opacity: 0; transform: translateY(-13px); }
+}
+
+.hero__steam {
+  position: absolute;
+  z-index: 3;
+  top: 2%;
+  left: calc(50% - 34px);
+  width: 68px;
+  color: var(--leite);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---------- grade ---------- */
